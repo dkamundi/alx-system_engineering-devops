@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# This script is displaying "Best School" 10 times
+
+best="Best School"
+amount=10
+i=0
+
+until ((i==amount)); do
+	echo "$best"
+	i=$((i+1))
+done
