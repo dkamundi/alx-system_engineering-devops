@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-
 # This script is displaying "Best School" 10 times
 
-for i in {1..10}
-do
-  echo "Best School"
-done
+best="Best School"
+amount=10
 
+for ((i=0; i<amount; i++)); do
+	echo "$best"
+done
