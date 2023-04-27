@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#loops to 10 and diplays:
+#	bad luck for the 4th iteration
+#	good lusk for the 8th iteration
+#	Best School for all the others
+
+iteration=1
+while ((iteration<=10)); do
+	if ((iteration == 4)); then
+		echo "bad luck"
+	elif ((iteration == 8)); then
+		echo "good luck"
+	else echo "Best School"
+	fi
+	iteration=$((iteration+1))
+done
