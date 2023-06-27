@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Script: 3-redirection.sh
+# Description: Configure Nginx server to redirect /redirect_me to another page
+
+# Update the system packages
+sudo apt-get update
+
+# Install Nginx if not already installed
+if ! [ -x "$(command -v nginx)" ]; then
+    sudo apt-get install -y nginx
+fi
+
+# Create a backup of the default Nginx configuration file
+sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.backup
+
+# Modify the Nginx configuration file to set up the redirection
+sudo sed -i '/^server {/a \\tlocation \/redirect_me {\\n\t\treturn 301 https:\/\/www.example.com;\\n\t}' /etc/nginx/sites-available/default
+
+# Test the modified Nginx configuration
+sudo nginx -t
+
+# Restart Nginx to apply the changes
+sudo service nginx restart

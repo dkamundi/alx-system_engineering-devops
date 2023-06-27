@@ -2,20 +2,30 @@
 # Script: install_nginx.sh
 # Description: Install and configure Nginx on an Ubuntu machine
 
+set -euo pipefail
+
 # Update the system packages
 sudo apt-get update
 
 # Install Nginx
-sudo apt-get install -y ngix
+sudo apt-get install -y install ngix
+
+# Change ownership of the web directory to the current user
+sudo chown -R ubuntu /var/www/html
 
 # Configure Nginx
-sudo tee /etc/nginx/sites-available/default << EOF
-server {
-	listen 80;
-	location / {
-		return 200  "Hello World!";
-	}
-}
+sudo mv /var/www/html/index.html /var/www/html/index.txt
+
+cat > /var/www/html/index.html <<EOF
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello World!</title>
+</head>
+<body>
+    <h1>Hello World!</h1>
+</body>
+</html>
 EOF
 
 # Restart Nginx
