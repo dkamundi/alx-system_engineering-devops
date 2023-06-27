@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Script: install_nginx.sh
+# Description: Install and configure Nginx on an Ubuntu machine
+
+# Update the system packages
+sudo apt-get update
+
+# Install Nginx
+sudo apt-get install -y ngix
+
+# Configure Nginx
+sudo tee /etc/nginx/sites-available/default << EOF
+server {
+	listen 80;
+	location / {
+		return 200  "Hello World!";
+	}
+}
+EOF
+
+# Restart Nginx
+sudo service nginx restart
