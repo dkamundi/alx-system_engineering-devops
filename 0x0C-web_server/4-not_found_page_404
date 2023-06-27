@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Script: 4-not_found_page_404.sh
+# Description: Configure Nginx server to have a custom 404 page
+
+# Update the system packages
+sudo apt-get update
+
+# Install Nginx if not already installed
+if ! [ -x "$(command -v nginx)" ]; then
+    sudo apt-get install -y nginx
+fi
+
+# Create a backup of the default Nginx configuration file
+sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.backup
+
+# Configure Nginx to use a custom 404 page
+sudo sed -i '/^server {/a \\terror_page 404 /404.html;\\n\\tlocation = /404.html {\\n\\t\\tinternal;\\n\\t\\treturn 404 "Ceci n\'est pas une page.";\\n\\t}' /etc/nginx/sites-available/default
+
+# Test the modified Nginx configuration
+sudo nginx -t
+
+# Restart Nginx to apply the changes
+sudo service nginx restart
+
