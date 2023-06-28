@@ -6,18 +6,18 @@
 sudo apt-get update
 
 # Install Nginx if not already installed
-if ! [ -x "$(command -v nginx)" ]; then
-    sudo apt-get install -y nginx
-fi
+sudo apt-get -y install nginx
+
+sudo service nginx start
 
 # Create a backup of the default Nginx configuration file
-sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.backup
+redirect="\\\trewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;"
 
 # Modify the Nginx configuration file to set up the redirection
-sudo sed -i '/^server {/a \\tlocation \/redirect_me {\\n\t\treturn 301 https:\/\/www.example.com;\\n\t}' /etc/nginx/sites-available/default
+sudo sed -i "26i $redirect" /etc/nginx/sites-available/default
 
-# Test the modified Nginx configuration
-sudo nginx -t
+# Restart Ngix server
+sudo nginx restart
 
-# Restart Nginx to apply the changes
-sudo service nginx restart
+# Reload Nginx to apply the changes
+sudo service nginx reload
