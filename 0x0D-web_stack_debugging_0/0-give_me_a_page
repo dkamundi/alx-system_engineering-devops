@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# fix a broken apache webstack*
+# install apache2 web server incase it doesn't exist
+# starts the service
+
+apt update
+apt install apache2
+service apache2 start
