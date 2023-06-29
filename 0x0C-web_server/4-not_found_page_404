@@ -6,19 +6,21 @@
 sudo apt-get update
 
 # Install Nginx if not already installed
-if ! [ -x "$(command -v nginx)" ]; then
-    sudo apt-get install -y nginx
-fi
+sudo apt-get -y install nginx
 
-# Create a backup of the default Nginx configuration file
-sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.backup
+# Ngix service start
+sudo service nginx start
+
+echo "Ceci n'est pas une page" | sudo tee /usr/share/nginx/html/404.html
+
+new_404="\\\terror_page 404 /404.html;\n\tlocation = /404.html {\n\t\troot /usr/share/nginx/html;\n\t\tinternal;\n\t}"
 
 # Configure Nginx to use a custom 404 page
-sudo sed -i '/^server {/a \\terror_page 404 /404.html;\\n\\tlocation = /404.html {\\n\\t\\tinternal;\\n\\t\\treturn 404 "Ceci n\'est pas une page.";\\n\\t}' /etc/nginx/sites-available/default
+sudo sed -i "27i $new_404" /etc/nginx/sites-available/default
 
 # Test the modified Nginx configuration
-sudo nginx -t
-
-# Restart Nginx to apply the changes
 sudo service nginx restart
+
+# Reload Nginx to apply the changes
+sudo service nginx reload
 
