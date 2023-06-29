@@ -1,48 +1,24 @@
 # Install Nginx package
 package { 'nginx':
-  ensure => installed,
+  ensure => present,
 }
 
-# Remove default Nginx configuration
-file { '/etc/nginx/sites-enabled/default':
-  ensure => absent,
+exec { 'install':
+	command => 'sudo apt-get update ; sudo apt-get -y install nginx',
+	provider => shell,
 }
 
-# Define Nginx configuration file
-file { '/etc/nginx/sites-available/default':
-  ensure  => present,
-  content => "
-    server {
-      listen 80;
-      server_name _;
-
-      location / {
-        return 301 http://\$host/redirect_me;
-      }
-
-      location /redirect_me {
-        return 301 http://\$host/hello;
-      }
-
-      location /hello {
-        return 200 'Hello World!';
-      }
-    }
-  ",
-  notify  => Service['nginx'],
+exec { 'Hello':
+	command  => 'echo "Hello World!" | sudo tee /var/www/html/index.html',
+ 	provider => shell,
 }
 
-# Enable the Nginx configuration
-file { '/etc/nginx/sites-enabled/default':
-  ensure => link,
-  target => '/etc/nginx/sites-available/default',
-  notify => Service['nginx'],
+exec { 'redirect_me':
+	command  => 'sudo sed -i "s/listen 80 default_server;/listen 80 default_server;\\n\\tlocation \\/redirect_me {\\n\\t\\treturn 301 https:\\/\\/blog.ehoneahobed.com\\/;\\n\\t}/" /etc/nginx/sites-available/default',
+	 provider => shell,
 }
 
-# Ensure Nginx service is running and enabled
-service { 'nginx':
-  ensure    => running,
-  enable    => true,
-  subscribe => File['/etc/nginx/sites-enabled/default'],
+exec { 'restart_nginx':
+	command  => 'sudo service nginx restart',
+	 provider => shell,
 }
-
