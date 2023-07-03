@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+#  Update  the system packages
+sudo apt update
+
+# Install  Nginx
+sudo apt install -y nginx
+
+# Configure custom Nginx  response header
+echo "add_header X-Served-By $hostname;" | sudo tee /etc/nginx/conf.d/custom_header.conf
+
+# Restart Nginx
+sudo service nginx restart
