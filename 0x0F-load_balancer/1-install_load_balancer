@@ -7,18 +7,18 @@ sudo apt update
 sudo apt install -y haproxy
 
 # Configure HAProxy
-sudo tee /etc/haproxy/haproxy.cfg > /dev/null <<EOF
-frontend http_front
+echo "
+frontend dkamundi_frontend
 	bind *:80
 	mode http
-	default_backend http_back
+	default_backend http_backend
 
-backend http_back
+backend dkamundi_backend
 	mode http
 	balance roundrobin
 	server 206917-web-01 100.27.10.107:80 check
     	server 206917-web-02 100.26.255.78:80 check
-EOF
+	">> /etc/haproxy/haproxy.cfg
 
 # Enable HAProxy init script
 sudo sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
