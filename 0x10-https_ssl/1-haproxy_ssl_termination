@@ -44,14 +44,13 @@ listen 20949-lb-01
 	option forwardfor
 	option http-server-close
 
-frontend www-https
-#	bind *:443
-	bind *:443 ssl crt /etc/haproxy/ssl-certs/cert.pem
-	http-request add-header X-Forwarded-Proto: https
-	# Let the letsencrypt backend handle requests to the
-	# acme-challenge url
-	acl letsencrypt-req path_beg /.well-known/acme-challenge/
-	use_backend letsencrypt if letsencrypt-req
+frontend dkamundi_fronten
+	bind *:80
+        mode http
+        default_backend http_backend
 	
-backend letsencrypt
-   server letsencrypt 127.0.0.1:9785
+backend dkamundi_backend
+	mode http
+        balance roundrobin
+        server 206917-web-01 100.27.10.107:80 check
+        server 206917-web-02 100.26.255.78:80 check
