@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# This bash function points to the IP Address of the domain
+
+func() {
+    local domain="$1"
+    local subdomain="$2"
+
+    local record_type=$(dig +short "$subdomain.$domain" | awk '{print toupper($0)}')
+
+    if [[ -n "$record_type" ]]; then
+        local destination=$(dig +short "$subdomain.$domain" | awk 'NR==1{print $0}')
+        echo "The subdomain $subdomain is a $record_type record and points to $destination"
+    else
+        echo "The subdomain $subdomain.$domain does not exist."
+    fi
+}
+
+# Checking the arguments passed
+
+if [[ "$#" -eq 1 ]]; then
+    func "$1" "www"
+    func "$1" "lb-01"
+    func "$1" "web-01"
+    func "$1" "web-02"
+elif [[ "$#" -eq 2 ]]; then
+    func "$1" "$2"
+fi
+
