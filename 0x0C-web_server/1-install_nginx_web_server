@@ -10,9 +10,7 @@ sudo apt-get install -y install ngix
 ufw allow 'Nginx HTTP'
 
 # Create a sample page
-echo "Hello World!" | tee /var/www/html/
-index.html
-sudo ngix -t
+echo "Hello World!" > /var/www/html/index.html
 
 # start Nginx
 sudo service nginx start
