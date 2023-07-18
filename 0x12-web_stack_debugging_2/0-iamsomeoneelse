@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# This script runs the whoami command as the specified user
+
+if [ $# -eq 0 ]; then
+	echo "Error: Please provide a username as an argument."
+	exit 1
+fi
+
+username=$1
+sudo -u "$username" whoami
