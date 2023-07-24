@@ -2,12 +2,11 @@
 
 """
 Python script to fetch employee TODO list progress from the given REST API
-and export it to JSON and CSV formats.
+and export it to a JSON file.
 """
 
 import sys
 import requests
-import csv
 import json
 
 
@@ -44,14 +43,14 @@ def get_employee_todo_progress(employee_id):
         # Extracting completed tasks
         completed_tasks = [
             {
+                "username": employee_name,
                 "task": task["title"],
-                "completed": task["completed"],
-                "username": employee_name
+                "completed": task["completed"]
             }
-            for task in todos_data if task["completed"]
+            for task in todos_data
         ]
 
-        return employee_name, completed_tasks
+        return completed_tasks
 
     except requests.exceptions.RequestException as e:
         print("Error occurred while fetching data:", e)
@@ -61,61 +60,36 @@ def get_employee_todo_progress(employee_id):
         sys.exit(1)
 
 
-def export_to_csv(employee_id, employee_name, completed_tasks):
-    """
-    Exports the employee TODO list progress to a CSV file.
-
-    Args:
-        employee_id (int): The ID of the employee.
-        employee_name (str): The name of the employee.
-        completed_tasks (list): List of completed tasks.
-
-    Returns:
-        None
-    """
-    filename = f"{employee_id}.csv"
-    with open(filename, 'w', newline='') as csv_file:
-        csv_writer = csv.writer(csv_file)
-        csv_writer.writerow(["USER_ID", "USERNAME", "TASK_COMPLETED_STATUS", "TASK_TITLE"])
-        for task in completed_tasks:
-            csv_writer.writerow([employee_id, employee_name, "true", task["task"]])
-
-    print(f"Data exported to {filename}")
-
-
-def export_to_json(employee_id, completed_tasks):
+def export_to_json(todo_data):
     """
     Exports the employee TODO list progress to a JSON file.
 
     Args:
-        employee_id (int): The ID of the employee.
-        completed_tasks (list): List of completed tasks.
+        todo_data (dict): Dictionary containing employee ID as key and the list of completed tasks.
 
     Returns:
         None
     """
-    data = {str(employee_id): completed_tasks}
-    filename = f"{employee_id}.json"
+    filename = "todo_all_employees.json"
     with open(filename, 'w') as json_file:
-        json.dump(data, json_file, indent=2)
+        json.dump(todo_data, json_file, indent=4)
 
     print(f"Data exported to {filename}")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 gather_data_and_export_to_JSON.py <employee_id>")
+    if len(sys.argv) != 1:
+        print("Usage: python3 gather_data_and_export_to_JSON.py")
         sys.exit(1)
 
     try:
-        employee_id = int(sys.argv[1])
-        employee_name, completed_tasks = get_employee_todo_progress(employee_id)
-        print(f"Employee {employee_name} is done with tasks ({len(completed_tasks)}/{employee_id}):")
-        for task in completed_tasks:
-            print(f"\t{task['task']}")
+        # Fetching TODO list for all employees and organizing the data by employee ID
+        todo_data = {}
+        for employee_id in range(1, 11):  # Assuming employee IDs are from 1 to 10
+            completed_tasks = get_employee_todo_progress(employee_id)
+            todo_data[str(employee_id)] = completed_tasks
 
-        export_to_csv(employee_id, employee_name, completed_tasks)
-        export_to_json(employee_id, completed_tasks)
+        export_to_json(todo_data)
 
     except ValueError:
         print("Error: Invalid employee ID (must be an integer)")
