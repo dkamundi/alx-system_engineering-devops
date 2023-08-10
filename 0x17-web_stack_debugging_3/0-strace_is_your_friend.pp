@@ -13,3 +13,4 @@ service { 'apache2':
   enable  => true,
   require => Exec['replace phpp with php'],  # Restart Apache after fixing the file
 }
+
